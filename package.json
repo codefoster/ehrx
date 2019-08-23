@@ -1,5 +1,5 @@
 {
-  "name": "simulator",
+  "name": "consumer",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,6 +12,8 @@
   "dependencies": {
     "@azure/event-hubs": "^2.1.1",
     "@types/node": "^12.7.2",
-    "dotenv": "^8.1.0"
+    "dotenv": "^8.1.0",
+    "moment": "^2.24.0",
+    "rxjs": "^6.5.2"
   }
 }

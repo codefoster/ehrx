@@ -7,16 +7,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const { EventHubClient } = require('@azure/event-hubs');
+Object.defineProperty(exports, "__esModule", { value: true });
+const event_hubs_1 = require("@azure/event-hubs");
+const moment = require("moment");
 require('dotenv').config();
-const client = EventHubClient.createFromConnectionString(process.env.CONNECTION_STRING, "eh1");
-start();
-function start() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const pids = yield client.getPartitionIds();
-        //enumerate the partitions
-        pids.map(pid => client.receive(pid, event => {
-            console.log(event.body);
-        }, error => { }));
-    });
-}
+const client = event_hubs_1.EventHubClient.createFromConnectionString(process.env.CONNECTION_STRING, "eh1");
+let i = 0;
+setInterval(() => __awaiter(this, void 0, void 0, function* () {
+    let lag = Math.ceil(Math.random() * 10);
+    let msg = { body: { timestamp: moment().subtract(lag, "seconds").toDate(), i: i++ } };
+    yield client.send(msg);
+    console.log(msg);
+}), 4);
