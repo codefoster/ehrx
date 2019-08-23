@@ -25,7 +25,7 @@ async function start() {
                 // let delay = (DELAY - moment(event.body.timestamp).diff(moment(), "millisecond"));
                 // console.log(`delay: ${delay}`);
                 // setTimeout(() => events.next(event.body), delay);
-                event.body.receiveTimestamp = moment().format();
+                event.body.receiveTimestamp = moment();
                 events.next(event.body);
             },
             error => { console.error(error) },
@@ -38,8 +38,9 @@ events$
     .subscribe(
         (event: any) => {
             messageCount++;
-            let receiveLatency = moment(event.receiveTimestamp).diff(event.timestamp, "milliseconds");
-            let processLatency = moment().diff(moment(event.timestamp), "milliseconds");
+            let processTimestamp = moment();
+            let receiveLatency = event.receiveTimestamp.diff(event.timestamp, "milliseconds");
+            let processLatency = processTimestamp.diff(event.receiveTimestamp, "milliseconds");
             receiveLatencies.push(receiveLatency);
             processLatencies.push(processLatency);
 
@@ -47,8 +48,8 @@ events$
                 timestamp: event.timestamp,
                 receiveTimestamp: event.receiveTimestamp,
                 receiveLatency: receiveLatency,
-                processTimestamp: moment().format(),
-                processLatency: moment().diff(moment(event.timestamp), "milliseconds"),
+                processTimestamp: processTimestamp.toDate(),
+                processLatency: processLatency,
                 averageReceiveLatency: Math.round(receiveLatencies.reduce((a, c) => a + c, 0) / receiveLatencies.length),
                 averageProcessLatency: Math.round(processLatencies.reduce((a, c) => a + c, 0) / processLatencies.length),
                 rate: moment().diff(startTime, "milliseconds") / messageCount
